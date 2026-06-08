@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segurança - Documentação Loterias IA v7.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .docs-card { background: var(--bg-card); border-radius: 20px; padding: 30px; border: 2px solid var(--border); margin-bottom: 30px; }
+        .docs-card h1 { background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .docs-card h2 { color: #f59e0b; margin: 25px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        .security-item { background: var(--bg-primary); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #22c55e; }
+        .btn-voltar { background: #64748b; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .btn-voltar:hover { transform: scale(1.02); background: #475569; }
+        .badge-security { background: #22c55e; color: #1e293b; font-size: 10px; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+            <div class="header-text">
+                <h1>🧠 Loterias V.7.0 <span class="version-badge">SEGURANÇA</span></h1>
+                <p class="header-subtitle">Documentação de segurança do sistema</p>
+            </div>
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+        </div>
+    </div>
+
+    <div class="docs-container">
+        <div class="docs-card">
+            <h1>🔒 Segurança do Sistema v7.0</h1>
+
+            <h2>🛡️ Camadas de Segurança</h2>
+
+            <div class="security-item">
+                <strong>🔐 Autenticação Firebase</strong> <span class="badge-security">Implementado</span><br>
+                Login via Google, Facebook e E-mail/Senha.<br>
+                Tokens JWT expiram após 1 hora.<br>
+                Domínios autorizados configurados no Firebase Console.
+            </div>
+
+            <div class="security-item">
+                <strong>🛡️ RBAC (Role-Based Access Control)</strong> <span class="badge-security">Implementado</span><br>
+                Papéis: guest, free, pro, admin, super_admin.<br>
+                Permissões granulares para cada ação do sistema.<br>
+                Verificação em cada endpoint da API.
+            </div>
+
+            <div class="security-item">
+                <strong>⏱️ Rate Limiting</strong> <span class="badge-security">Implementado</span><br>
+                30 requisições por minuto (padrão).<br>
+                5 requisições por 10 segundos (endpoint /generate).<br>
+                5 tentativas de login por minuto.<br>
+                Protege contra ataques de força bruta e DDoS.
+            </div>
+
+            <div class="security-item">
+                <strong>🤖 Bot Detection</strong> <span class="badge-security">Implementado</span><br>
+                Detecta bots baseado em User-Agent e headers.<br>
+                Score de 0-100 quanto maior mais suspeito.<br>
+                Bloqueia requisições com score > 60.
+            </div>
+
+            <div class="security-item">
+                <strong>⚠️ Anomaly Detection</strong> <span class="badge-security">Implementado</span><br>
+                Monitora comportamento do usuário em janela de 5 minutos.<br>
+                Detecta: muitas ações, alta frequência, múltiplos usuários/IP.<br>
+                Gera alertas no log de auditoria.
+            </div>
+
+            <div class="security-item">
+                <strong>📜 Audit Logger</strong> <span class="badge-security">Implementado</span><br>
+                Registra todas as ações importantes (login, geração, compra).<br>
+                Salva IP, User-Agent, timestamp e detalhes.<br>
+                Opcional: persistência no banco de dados.
+            </div>
+
+            <div class="security-item">
+                <strong>⚡ Transações Atômicas (RPC)</strong> <span class="badge-security">Implementado</span><br>
+                Operações TUDO ou NADA via RPC do Supabase.<br>
+                <code>SELECT FOR UPDATE</code> para pessimistic locking.<br>
+                Idempotência via <code>idempotency_key</code>.
+            </div>
+
+            <div class="security-item">
+                <strong>🔑 PRO fixo por e-mail</strong> <span class="badge-security">Implementado</span><br>
+                E-mails na lista de PRO sempre têm plano ativo.<br>
+                Créditos resetados para 100 a cada login.<br>
+                Configurável via variável de ambiente.
+            </div>
+
+            <div class="security-item">
+                <strong>💳 Webhook com verificação</strong> <span class="badge-security">Parcial</span><br>
+                Verificação de assinatura HMAC-SHA256.<br>
+                Idempotência para evitar duplicação.<br>
+                ⚠️ Mercado Pago real: configurar ACCESS_TOKEN.
+            </div>
+
+            <h2>📋 Checklist de Segurança</h2>
+            <table style="width:100%; margin-top:15px;">
+                <thead><tr><th>Item</th><th>Status</th><th>Observação</th></tr></thead>
+                <tbody>
+                    <tr><td>Autenticação Firebase</td><td style="color:#22c55e;">✅ OK</td><td>Google, Facebook, Email</td></tr>
+                    <tr><td>RBAC</td><td style="color:#22c55e;">✅ OK</td><td>roles.ts + permissions.ts</td></tr>
+                    <tr><td>Rate Limiting</td><td style="color:#22c55e;">✅ OK</td><td>rateLimiter.ts</td></tr>
+                    <tr><td>Bot Detection</td><td style="color:#22c55e;">✅ OK</td><td>botDetector.ts</td></tr>
+                    <tr><td>Anomaly Detection</td><td style="color:#22c55e;">✅ OK</td><td>anomalyDetection.ts</td></tr>
+                    <tr><td>Audit Logger</td><td style="color:#22c55e;">✅ OK</td><td>auditLogger.ts</td></tr>
+                    <tr><td>Transações Atômicas</td><td style="color:#22c55e;">✅ OK</td><td>RPC no Supabase</td></tr>
+                    <tr><td>Idempotência</td><td style="color:#22c55e;">✅ OK</td><td>idempotency_key</td></tr>
+                    <tr><td>Pessimistic Locking</td><td style="color:#22c55e;">✅ OK</td><td>SELECT FOR UPDATE</td></tr>
+                    <tr><td>Webhook Assinatura</td><td style="color:#f59e0b;">⚠️ Parcial</td><td>Implementar com Mercado Pago real</td></tr>
+                    <tr><td>RLS no Supabase</td><td style="color:#ef4444;">❌ Pendente</td><td>Futuro</td></tr>
+                </tbody>
+            </table>
+
+            <h2>🔐 Variáveis de Ambiente Necessárias</h2>
+            <pre style="background: var(--bg-primary); padding: 15px; border-radius: 12px;">
+# Supabase
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+# Firebase (para backend)
+FIREBASE_PROJECT_ID=...
+FIREBASE_CLIENT_EMAIL=...
+FIREBASE_PRIVATE_KEY=...
+
+# Mercado Pago (produção)
+MERCADO_PAGO_ACCESS_TOKEN=...
+MERCADO_PAGO_WEBHOOK_SECRET=...
+
+# Redis (opcional)
+REDIS_URL=...
+
+# Feature flags
+ENABLE_AUDIT_DB=false
+ENABLE_PIX=false
+            </pre>
+
+            <h2>📝 Recomendações para Produção</h2>
+            <ul>
+                <li>Ativar <strong>RLS (Row Level Security)</strong> no Supabase</li>
+                <li>Configurar <strong>Redis</strong> para rate limiting distribuído</li>
+                <li>Usar <strong>variáveis de ambiente</strong> para todas as chaves secretas</li>
+                <li>Implementar <strong>Webhook real</strong> com Mercado Pago</li>
+                <li>Adicionar <strong>2FA</strong> para administradores</li>
+                <li>Realizar <strong>testes de penetração</strong> periódicos</li>
+            </ul>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar à Documentação</button>
+            <button class="btn-voltar" onclick="window.location.href='../index.html'">← Voltar ao Sistema</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS/TS - Documentação Loterias IA v7.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .docs-card { background: var(--bg-card); border-radius: 20px; padding: 30px; border: 2px solid var(--border); margin-bottom: 30px; }
+        .docs-card h1 { background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .docs-card h2 { color: #f59e0b; margin: 25px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        .docs-card h3 { color: #38bdf8; margin: 20px 0 10px 0; }
+        .module-box { background: var(--bg-primary); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #8b5cf6; }
+        .module-name { font-size: 18px; font-weight: 600; color: #8b5cf6; margin-bottom: 8px; }
+        .module-desc { color: var(--text-secondary); font-size: 13px; margin-bottom: 10px; }
+        .module-functions { background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 10px; font-size: 12px; font-family: monospace; }
+        .btn-voltar { background: #64748b; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .btn-voltar:hover { transform: scale(1.02); background: #475569; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .badge-ts { background: #3178c6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
+        .badge-js { background: #f7df1e; color: #1e293b; font-size: 10px; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+            <div class="header-text">
+                <h1>🧠 Loterias V.7.0 <span class="version-badge">JS/TS</span></h1>
+                <p class="header-subtitle">Documentação dos módulos JavaScript/TypeScript</p>
+            </div>
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+        </div>
+    </div>
+
+    <div class="docs-container">
+        <div class="docs-card">
+            <h1>📘 Módulos do Sistema (v7.0)</h1>
+            <p>Arquitetura refatorada com TypeScript e DDD</p>
+
+            <div class="grid-2">
+                <!-- Frontend -->
+                <div class="module-box">
+                    <div class="module-name">🎨 Frontend <span class="badge-js">JavaScript</span></div>
+                    <div class="module-desc">Scripts do frontend web</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • api-client.js - Cliente HTTP para API<br>
+                        • auth.js - Autenticação Firebase<br>
+                        • auth-handler.js - Processamento de login<br>
+                        • jogos.js - Geração de palpites<br>
+                        • user-interface.js - Interface do usuário<br>
+                        • loterias.js - Gerenciamento de loterias<br>
+                        • ia.js - IA (frontend)<br>
+                        • utils.js - Utilitários<br>
+                        • globals.js - Variáveis globais<br>
+                        • init.js - Inicialização
+                    </div>
+                </div>
+
+                <!-- Core Entities (DDD) -->
+                <div class="module-box">
+                    <div class="module-name">🏛️ Core/Entities <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Entidades de domínio (DDD)</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • User.ts - Entidade Usuário<br>
+                        • Game.ts - Entidade Jogo<br>
+                        • Transaction.ts - Entidade Transação<br>
+                        • Credits.ts - Value Object Créditos
+                    </div>
+                </div>
+
+                <!-- IA -->
+                <div class="module-box">
+                    <div class="module-name">🧠 Core/IA <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Inteligência Artificial</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • AdvancedLotteryAI.ts - Algoritmos de predição<br>
+                        • training.ts - Treinamento e backtest
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div class="module-box">
+                    <div class="module-name">⚙️ Services <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Camada de serviços</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • auth.service.ts - Autenticação<br>
+                        • credits.service.ts - Gerenciamento de créditos<br>
+                        • generate.service.ts - Geração de jogos
+                    </div>
+                </div>
+
+                <!-- Repositories -->
+                <div class="module-box">
+                    <div class="module-name">🗄️ Repositories <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Acesso a dados (Supabase)</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • user.repository.ts - CRUD usuários<br>
+                        • game.repository.ts - Histórico de jogos<br>
+                        • transaction.repository.ts - Transações
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="module-box">
+                    <div class="module-name">🛡️ Security <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Segurança e proteção</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • roles.ts - RBAC papéis<br>
+                        • permissions.ts - Verificação de permissões<br>
+                        • rateLimiter.ts - Rate limiting<br>
+                        • botDetector.ts - Detecção de bots<br>
+                        • anomalyDetection.ts - Detecção de anomalias<br>
+                        • auditLogger.ts - Log de auditoria
+                    </div>
+                </div>
+
+                <!-- Cache -->
+                <div class="module-box">
+                    <div class="module-name">💾 Cache <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Cache com Redis + fallback</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • redis.ts - Cliente Redis<br>
+                        • strategies/index.ts - Estratégias de cache
+                    </div>
+                </div>
+
+                <!-- Config -->
+                <div class="module-box">
+                    <div class="module-name">⚙️ Config <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Configurações centralizadas</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • env.ts - Variáveis de ambiente<br>
+                        • app.config.ts - Configurações da aplicação<br>
+                        • database.config.ts - Configurações do banco<br>
+                        • redis.config.ts - Configurações do Redis
+                    </div>
+                </div>
+
+                <!-- Tests -->
+                <div class="module-box">
+                    <div class="module-name">🧪 Tests <span class="badge-ts">TypeScript</span></div>
+                    <div class="module-desc">Testes unitários</div>
+                    <div class="module-functions">
+                        <strong>Arquivos:</strong><br>
+                        • credits.test.ts - Testes do Credits<br>
+                        • ia.test.ts - Testes da IA<br>
+                        • validators.test.ts - Testes dos validadores
+                    </div>
+                </div>
+            </div>
+
+            <h2>📦 Dependências</h2>
+            <pre style="background: var(--bg-primary); padding: 15px; border-radius: 12px; overflow-x: auto; font-size: 12px;">
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "@vercel/node": "^3.2.23",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.4.5",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.0"
+  }
+}
+            </pre>
+
+            <h2>🔄 Fluxo de Dados (v7.0)</h2>
+            <pre style="background: var(--bg-primary); padding: 15px; border-radius: 12px; overflow-x: auto; font-size: 12px;">
+Web (index.html)
+    ├── api-client.js → API (Vercel Functions)
+    │       ├── /api/user/credits → credits.service.ts → user.repository.ts
+    │       ├── /api/generate → generate.service.ts → game.repository.ts
+    │       └── /api/pro/status → auth.service.ts → user.repository.ts
+    ├── auth.js → Firebase Auth
+    ├── jogos.js → IA local + API
+    └── user-interface.js → API para créditos
+
+API (TypeScript) → Services → Repositories → Supabase (RPC atômicas)
+            </pre>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar à Documentação</button>
+            <button class="btn-voltar" onclick="window.location.href='../index.html'">← Voltar ao Sistema</button>
+        </div>
+    </div>
+</body>
+</html>

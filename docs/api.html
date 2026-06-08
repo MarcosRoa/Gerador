@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API - Documentação Loterias IA v7.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .docs-card { background: var(--bg-card); border-radius: 20px; padding: 30px; border: 2px solid var(--border); margin-bottom: 30px; }
+        .docs-card h1 { background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .docs-card h2 { color: #f59e0b; margin: 25px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        .api-endpoint { background: var(--bg-primary); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #22c55e; }
+        .api-method { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-right: 10px; }
+        .method-get { background: #22c55e; color: white; }
+        .method-post { background: #f59e0b; color: #1e293b; }
+        .api-url { font-family: monospace; font-size: 13px; }
+        .btn-voltar { background: #64748b; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .btn-voltar:hover { transform: scale(1.02); background: #475569; }
+        pre { background: var(--bg-primary); padding: 15px; border-radius: 12px; overflow-x: auto; font-size: 12px; }
+        .badge-rpc { background: #8b5cf6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+            <div class="header-text">
+                <h1>🧠 Loterias V.7.0 <span class="version-badge">API</span></h1>
+                <p class="header-subtitle">Documentação da API REST</p>
+            </div>
+            <div class="header-logo"><img src="../BrasãoRoa Imagem.png" onerror="this.style.display='none'" alt="Logo"></div>
+        </div>
+    </div>
+
+    <div class="docs-container">
+        <div class="docs-card">
+            <h1>🗄️ API - Endpoints</h1>
+            <p>API centralizada via Vercel Functions com TypeScript</p>
+
+            <h2>📡 Endpoints Disponíveis</h2>
+
+            <div class="api-endpoint">
+                <span class="api-method method-get">GET</span>
+                <span class="api-url">/api/user/credits</span>
+                <div style="margin-top: 8px; font-size: 12px;">Retorna o saldo do usuário logado</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Headers: Authorization: Bearer {firebase_token}, X-User-Id, X-User-Email</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { credits: number, isPro: boolean }</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-get">GET</span>
+                <span class="api-url">/api/user/history</span>
+                <div style="margin-top: 8px; font-size: 12px;">Retorna histórico de palpites</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { history: [], count: number }</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-get">GET</span>
+                <span class="api-url">/api/pro/status</span>
+                <div style="margin-top: 8px; font-size: 12px;">Retorna status do plano PRO</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { isPro: boolean, daysLeft: number }</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-post">POST</span>
+                <span class="api-url">/api/generate</span>
+                <div style="margin-top: 8px; font-size: 12px;">Gera jogos e debita créditos <span class="badge-rpc">RPC Atômica</span></div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Body: { lottery, quantity, mode, extraNumbers }</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { games, creditsRemaining, gameId, idempotencyKey }</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-post">POST</span>
+                <span class="api-url">/api/payments/create</span>
+                <div style="margin-top: 8px; font-size: 12px;">Cria cobrança PIX (simulação ou real)</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Body: { amount, userId }</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { qrCode, copyPaste, paymentLink }</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-post">POST</span>
+                <span class="api-url">/api/payments/webhook</span>
+                <div style="margin-top: 8px; font-size: 12px;">Webhook do Mercado Pago (PIX)</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Body: payload do Mercado Pago</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">⚠️ Requer verificação de assinatura</div>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method method-get">GET</span>
+                <span class="api-url">/api/health</span>
+                <div style="margin-top: 8px; font-size: 12px;">Health check para monitoramento</div>
+                <div style="margin-top: 5px; font-size: 11px; color: var(--text-secondary);">Response: { status, version, checks }</div>
+            </div>
+
+            <h2>🔐 Autenticação</h2>
+            <p>Todas as requisições (exceto webhook) requerem:</p>
+            <pre>
+Authorization: Bearer {firebase_id_token}
+X-User-Id: {firebase_uid}
+X-User-Email: {user_email}
+X-User-Name: {user_name}
+            </pre>
+
+            <h2>⚡ RPC Atômicas (Supabase)</h2>
+            <p>Transações TUDO ou NADA para operações críticas:</p>
+            <pre>
+-- Geração de jogos (débito + histórico)
+SELECT * FROM generate_game(
+    p_user_uid, p_lottery, p_games, p_cost, p_mode, p_extra_numbers, p_idempotency_key
+);
+
+-- Adição de créditos (compra PIX)
+SELECT * FROM add_credits(
+    p_user_uid, p_amount, p_payment_id, p_idempotency_key
+);
+            </pre>
+
+            <h2>🛡️ Proteções</h2>
+            <ul>
+                <li><strong>Rate Limiting:</strong> 30 req/min (padrão), 5 req/10s (generate)</li>
+                <li><strong>Idempotência:</strong> Evita duplicação via idempotency_key</li>
+                <li><strong>Pessimistic Locking:</strong> SELECT FOR UPDATE nas RPCs</li>
+                <li><strong>Validação:</strong> Zod schemas em todos os endpoints</li>
+            </ul>
+
+            <h2>📦 Estrutura da API</h2>
+            <pre>
+api/
+├── _lib/
+│   ├── auth.ts          # Autenticação
+│   ├── supabase.ts      # Cliente Supabase
+│   ├── types.ts         # Tipos compartilhados
+│   └── constants.ts     # Constantes
+├── _middlewares/
+│   └── rateLimit.ts     # Rate limiting
+├── _validators/
+│   └── generate.schema.ts  # Zod schemas
+├── user/
+│   ├── credits.ts       # GET /api/user/credits
+│   └── history.ts       # GET /api/user/history
+├── pro/
+│   └── status.ts        # GET /api/pro/status
+├── generate/
+│   └── index.ts         # POST /api/generate
+├── payments/
+│   ├── create.ts        # POST /api/payments/create
+│   └── webhook.ts       # POST /api/payments/webhook
+└── health.ts            # GET /api/health
+            </pre>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar à Documentação</button>
+            <button class="btn-voltar" onclick="window.location.href='../index.html'">← Voltar ao Sistema</button>
+        </div>
+    </div>
+</body>
+</html>
