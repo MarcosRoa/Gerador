@@ -14,7 +14,7 @@ async function gerarJogos() {
     const valorTotal = qtd * 3;
     const validacao = validarSaldoEAcesso(qtd, valorTotal);
     if (!validacao.valido) return;
-    
+     
     const dadosFiltrados = window.filtrarDados();
     if (dadosFiltrados.length < 10) {
         document.getElementById('resultados').innerHTML = `<div class="mensagem-erro">⚠️ Dados insuficientes! Apenas ${dadosFiltrados.length} concursos.</div>`;
@@ -53,7 +53,34 @@ async function gerarJogos() {
     }
     
     const hashtagConfig = window.formatarConfiguracoesHashtag ? window.formatarConfiguracoesHashtag() : '';
-    
+    // ============================================
+    // VALIDAÇÃO DE SALDO E ACESSO
+    // ============================================
+    function validarSaldoEAcesso(qtd, valorTotal) {
+        if (!window.usuarioAtual) {
+            window.mostrarModalLogin();
+            return { valido: false };
+        }
+        
+        if (window.creditosUsuario === undefined || window.creditosUsuario === null) {
+            window.mostrarToast('Erro ao verificar créditos. Recarregue a página.', 'error');
+            return { valido: false };
+        }
+        
+        if (window.creditosUsuario < valorTotal) {
+            window.mostrarToast(`Saldo insuficiente! Necessário: R$ ${valorTotal} | Disponível: R$ ${window.creditosUsuario}`, 'error');
+            window.abrirModalComprar();
+            return { valido: false };
+        }
+        
+        // Verificar se é PRO para modo bolão
+        if (window.modoBolaoAtivo && !window.isUserPro) {
+            window.mostrarToast('⭐ Modo Bolão é exclusivo para assinantes PRO!', 'warning');
+            return { valido: false };
+        }
+        
+        return { valido: true };
+    }
     // ============================================
     // GERAR JOGOS LOCALMENTE (IA no frontend)
     // ============================================
