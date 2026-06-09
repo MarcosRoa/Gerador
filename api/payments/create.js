@@ -23,13 +23,12 @@ export default async function handler(req, res) {
         // Buscar usuário
         const { data: user, error: userError } = await supabase
             .from('usuarios')
-            .select('creditos, email')
+            .select('creditos')
             .eq('uid', userId)
             .single();
         
         if (userError) throw userError;
         
-        // Adicionar créditos
         const novoSaldo = (user.creditos || 0) + amount;
         
         await supabase
