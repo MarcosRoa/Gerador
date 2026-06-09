@@ -3,17 +3,15 @@
 // ENDPOINT: GET /api/pro/status
 // ============================================
 // api/pro/status.js
-import { supabase, getOrCreateUser } from '../_lib/supabase.js';
-import { PRO_FIXED_EMAIL } from '../_lib/constants.js';
+import { createClient } from '@supabase/supabase-js';
 
-function daysLeft(expiresAt) {
-    if (!expiresAt) return 0;
-    const diff = new Date(expiresAt).getTime() - new Date().getTime();
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ALLOWED_ORIGIN || 'https://loterias-ia.vercel.app');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     
     if (req.method === 'OPTIONS') return res.status(200).end();
@@ -23,26 +21,33 @@ export default async function handler(req, res) {
     if (!uid) return res.status(400).json({ error: 'UID é obrigatório' });
     
     try {
-        const user = await getOrCreateUser(uid, req.headers['x-user-email']);
+        const { data: user, error } = await supabase
+            .from('usuarios')
+            .select('is_pro, pro_expires_at, email')
+            .eq('uid', uid)
+            .single();
         
-        // PRO fixo (vitalício)
+        if (error) {
+            return res.status(200).json({ success: true, isPro: false, daysLeft: 0 });
+        }
+        
+        const PRO_FIXED_EMAIL = 'mresquadriasaluminio@gmail.com';
+        
         if (user.email === PRO_FIXED_EMAIL) {
-            return res.status(200).json({ success: true, isPro: true, daysLeft: 365, isLifetime: true });
+            return res.status(200).json({ success: true, isPro: true, daysLeft: 365 });
         }
         
-        let isPro = user.is_pro;
-        let days = daysLeft(user.pro_expires_at);
-        
-        // Se expirou, atualizar
-        if (isPro && days === 0) {
-            isPro = false;
-            supabase.from('usuarios').update({ is_pro: false }).eq('uid', uid);
+        let daysLeft = 0;
+        if (user.is_pro && user.pro_expires_at) {
+            const expiresAt = new Date(user.pro_expires_at);
+            const now = new Date();
+            daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
         }
         
-        return res.status(200).json({ success: true, isPro, daysLeft: days });
+        return res.status(200).json({ success: true, isPro: user.is_pro || false, daysLeft });
         
     } catch (error) {
-        console.error('Erro em status:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error('Erro:', error);
+        return res.status(500).json({ error: error.message });
     }
 }
