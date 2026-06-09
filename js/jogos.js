@@ -2,8 +2,69 @@
 // JOGOS.js - Geração de palpites (FASE E - API INTEGRADA)
 // ============================================
 
-// ... (manter funções auxiliares existentes)
+// ============================================
+// FUNÇÕES DE GERAÇÃO DE JOGOS (FALLBACK)
+// ============================================
 
+function gerarJogoAleatorioPuro(config, quantidade) {
+    const numeros = new Set();
+    const min = config.incluirZero ? 0 : 1;
+    const max = config.maxNumero;
+    
+    while (numeros.size < quantidade) {
+        const num = Math.floor(Math.random() * (max - min + 1)) + min;
+        numeros.add(num);
+    }
+    return Array.from(numeros).sort((a, b) => a - b);
+}
+
+function gerarJogoAleatorioInteligente(config, dados, quantidade) {
+    // Se tiver IA treinada, usa ela
+    if (window.aiModel && window.iaTreinada) {
+        const seed = Math.floor(Math.random() * 1000);
+        return window.aiModel.predizerIAEspecialista(quantidade, config.temDispersao, window.dispersaoAtual || 15, seed);
+    }
+    
+    // Fallback: aleatório puro
+    return gerarJogoAleatorioPuro(config, quantidade);
+}
+
+function gerarJogoProbabilistico(config, dados, quantidade) {
+    // Mesma lógica do inteligente
+    return gerarJogoAleatorioInteligente(config, dados, quantidade);
+}
+
+// Registrar funções no window
+window.gerarJogoAleatorioPuro = gerarJogoAleatorioPuro;
+window.gerarJogoAleatorioInteligente = gerarJogoAleatorioInteligente;
+window.gerarJogoProbabilistico = gerarJogoProbabilistico;
+
+// ============================================
+// VALIDAÇÃO DE SALDO E ACESSO
+// ============================================
+function validarSaldoEAcesso(qtd, valorTotal) {
+    if (!window.usuarioAtual) {
+        window.mostrarModalLogin();
+        return { valido: false };
+    }
+    
+    if (window.creditosUsuario === undefined || window.creditosUsuario === null) {
+        window.mostrarToast('Erro ao verificar créditos. Recarregue a página.', 'error');
+        return { valido: false };
+    }
+    
+    if (window.creditosUsuario < valorTotal) {
+        window.mostrarToast(`Saldo insuficiente! Necessário: R$ ${valorTotal} | Disponível: R$ ${window.creditosUsuario}`, 'error');
+        window.abrirModalComprar();
+        return { valido: false };
+    }
+    
+    return { valido: true };
+}
+
+// ============================================
+// GERAR JOGOS
+// ============================================
 async function gerarJogos() {
     if (!window.usuarioAtual) { 
         window.mostrarModalLogin(); 
@@ -14,7 +75,7 @@ async function gerarJogos() {
     const valorTotal = qtd * 3;
     const validacao = validarSaldoEAcesso(qtd, valorTotal);
     if (!validacao.valido) return;
-     
+    
     const dadosFiltrados = window.filtrarDados();
     if (dadosFiltrados.length < 10) {
         document.getElementById('resultados').innerHTML = `<div class="mensagem-erro">⚠️ Dados insuficientes! Apenas ${dadosFiltrados.length} concursos.</div>`;
@@ -53,34 +114,7 @@ async function gerarJogos() {
     }
     
     const hashtagConfig = window.formatarConfiguracoesHashtag ? window.formatarConfiguracoesHashtag() : '';
-    // ============================================
-    // VALIDAÇÃO DE SALDO E ACESSO
-    // ============================================
-    function validarSaldoEAcesso(qtd, valorTotal) {
-        if (!window.usuarioAtual) {
-            window.mostrarModalLogin();
-            return { valido: false };
-        }
-        
-        if (window.creditosUsuario === undefined || window.creditosUsuario === null) {
-            window.mostrarToast('Erro ao verificar créditos. Recarregue a página.', 'error');
-            return { valido: false };
-        }
-        
-        if (window.creditosUsuario < valorTotal) {
-            window.mostrarToast(`Saldo insuficiente! Necessário: R$ ${valorTotal} | Disponível: R$ ${window.creditosUsuario}`, 'error');
-            window.abrirModalComprar();
-            return { valido: false };
-        }
-        
-        // Verificar se é PRO para modo bolão
-        if (window.modoBolaoAtivo && !window.isUserPro) {
-            window.mostrarToast('⭐ Modo Bolão é exclusivo para assinantes PRO!', 'warning');
-            return { valido: false };
-        }
-        
-        return { valido: true };
-    }
+    
     // ============================================
     // GERAR JOGOS LOCALMENTE (IA no frontend)
     // ============================================
@@ -120,7 +154,7 @@ async function gerarJogos() {
     const confianca = aiModel && iaTreinada ? aiModel.confianca : 50;
     
     // ============================================
-    // NOVO: SALVAR VIA API (em vez de Supabase direto)
+    // SALVAR VIA API
     // ============================================
     try {
         const result = await window.apiClient.generateGames({
